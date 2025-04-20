@@ -57,26 +57,32 @@ void encrypt(char *input, char *key, int mode) {
             if (input[i] != ' ')
                 hexByteCount++;
         }
-        hexByteCount /= 2;
+        hexByteCount /= 2; // This is the real byte count because we counted every non space as a byte so divide by 2 to get the real byte count
     
+        // Allocate memory for the output string and add 1 for null terminator
         output = malloc(hexByteCount + 1);
+        //outIndex is the index for the output string
         int outIndex = 0;
     
         for (int i = 0; i < inputLen; ) {
+            // Skip spaces
             if (input[i] == ' ') {
                 i++;
                 continue;
             }
-    
+            
+            // Copies two characters from the input string to a temporary string and converts it to a byte
             char hex[3] = { input[i], input[i + 1], '\0' };
             unsigned int byte;
             sscanf(hex, "%x", &byte);
-    
-            output[outIndex] = (char)(byte ^ key[outIndex % strlen(key)]);
+            
+            //Xor the byte with the key and store it in the output string
+            output[outIndex] = (char)(byte ^ key[outIndex % strlen(key)]); 
             outIndex++;
-            i += 2;
+            i += 2; // Need to increment by 2 because we are reading two characters at a time
         }
-    
+        
+        // Null terminate the output string
         output[outIndex] = '\0';
         printf("Decrypted text: %s\n", output);
     }
